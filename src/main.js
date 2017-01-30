@@ -11,7 +11,8 @@ function onLoad(framework) {
     var renderer = framework.renderer;
     var gui = framework.gui;
     var stats = framework.stats;
-
+	var stauff = framework.stauff;
+	
     // Basic Lambert white
     var lambertWhite = new THREE.MeshLambertMaterial({ color: 0xaaaaaa, side: THREE.DoubleSide });
 
@@ -21,7 +22,7 @@ function onLoad(framework) {
     directionalLight.position.set(1, 3, 2);
     directionalLight.position.multiplyScalar(10);
 
-    // set skybox
+    // set skybox background
     var loader = new THREE.CubeTextureLoader();
     var urlPrefix = '/images/skymap/';
 
@@ -31,7 +32,7 @@ function onLoad(framework) {
         urlPrefix + 'pz.jpg', urlPrefix + 'nz.jpg'
     ] );
 
-    scene.background = skymap;
+    //scene.background = skymap;
 
     // load a simple obj mesh
     var objLoader = new THREE.OBJLoader();
@@ -40,10 +41,36 @@ function onLoad(framework) {
         // LOOK: This function runs after the obj has finished loading
         var featherGeo = obj.children[0].geometry;
 
-        var featherMesh = new THREE.Mesh(featherGeo, lambertWhite);
-        featherMesh.name = "feather";
-        scene.add(featherMesh);
+		for( var f = 0; f < stauff.numFeathers; f++ ){
+	        var featherMesh = new THREE.Mesh(featherGeo, lambertWhite);
+    	    featherMesh.name = "feather" + featherMesh.id;
+    	    stauff.featherIds.push(featherMesh.id);
+        	scene.add(featherMesh);
+        }
     });
+
+	//// curve
+	
+	var controlPoints = [
+		new THREE.Vector3( -10, 0, 0 ),
+		new THREE.Vector3( -5, 2, 0 ),
+		new THREE.Vector3( 0, 0, 0 )
+	];
+	var curve = new THREE.CatmullRomCurve3( controlPoints );
+
+	var geometry = new THREE.Geometry();
+	geometry.vertices = curve.getPoints( 50 );
+
+	var material = new THREE.LineBasicMaterial( { color : 0xff0000 } );
+
+	// Create the final object to add to the scene
+	var curveObject = new THREE.Line( geometry, material );
+    scene.add(curveObject);
+    
+    //add to framework
+    framework.curve = curve;
+    
+    //// curve -end
 
     // set camera position
     camera.position.set(0, 1, 5);
@@ -61,12 +88,23 @@ function onLoad(framework) {
 
 // called on frame updates
 function onUpdate(framework) {
-    var feather = framework.scene.getObjectByName("feather");    
-    if (feather !== undefined) {
-        // Simply flap wing
-        var date = new Date();
-        feather.rotateZ(Math.sin(date.getTime() / 100) * 2 * Math.PI / 180);        
-    }
+	var stauff = framework.stauff;
+	for( var f = 0; f < stauff.numFeathers; f ++ ){
+		var feather = framework.scene.getObjectById(stauff.featherIds[f]);    
+
+		if (feather !== undefined) {
+			// Simply flap wing
+			var date = new Date();
+			feather.rotateZ(Math.sin(date.getTime() / 100) * 2 * Math.PI / 180);        
+	
+			//test
+			//feather.position.set( framework.curve., framework.curveVerts[0].y, framework.curveVerts[0].z );
+			var p = framework.curve.getPointAt(f / stauff.numFeathers);
+			feather.position.set( p.x, p.y, p.z );
+			//console.log( framework.curveVerts[0] );
+			//console.log(feather.position);
+		}
+	}
 }
 
 // when the scene is done initializing, it will call onLoad, then on frame updates, call onUpdate

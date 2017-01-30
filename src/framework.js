@@ -54,6 +54,13 @@ function init(callback, update) {
     framework.camera = camera;
     framework.renderer = renderer;
 
+	// our parameters
+	var stauff = { 
+		numFeathers: 20,
+		 featherIds: [] //array of feather object id's
+		}; 
+	framework.stauff = stauff;
+
     // begin the animation loop
     (function tick() {
       stats.begin();
