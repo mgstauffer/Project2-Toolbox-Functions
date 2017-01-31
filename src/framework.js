@@ -54,12 +54,23 @@ function init(callback, update) {
     framework.camera = camera;
     framework.renderer = renderer;
 
-	// our parameters
+	// my parameters
 	var stauff = { 
-		numFeathers: 20,
-		 featherIds: [] //array of feather object id's
+		numFeathers: 50,
+		featherIds: [], //array of feather object id's
+		controlPointsUp: [
+			new THREE.Vector3( 0, 0, 0 ),
+			new THREE.Vector3( 0, 4, 5 ),
+			new THREE.Vector3( -1.5, 1, 10 )
+			],
+		controlPointsDown: [
+			new THREE.Vector3( 0, 0, 0 ),
+			new THREE.Vector3( 0, -1.8, 5 ),
+			new THREE.Vector3( 1, -1.2, 10 )
+			]
 		}; 
 	framework.stauff = stauff;
+
 
     // begin the animation loop
     (function tick() {

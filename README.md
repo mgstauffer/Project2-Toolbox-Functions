@@ -1,5 +1,15 @@
 # [Project2: Toolbox Functions](https://github.com/CIS700-Procedural-Graphics/Project2-Toolbox-Functions)
 
+##### Stauffer submission
+
+Alas, still not enough time to do all the magic. I am happy at least I got the rotations worked out so the feathers stay in the plane of the wing as it flaps.
+
+
+
+
+
+
+
 ## Overview
 
 The objective of this assignment is to procedurally model and animate a bird wing. Let's get creative!
